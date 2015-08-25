@@ -190,7 +190,7 @@ namespace Caculator
 
         public void AppendOperator(bool isOper, String _operator)
         {
-            if (isOper)
+            if (isOper && !isFirstOperator)
             {
                 exprestionBuilder.Remove(exprestionBuilder.Length - 3, 3);
                 Append(_operator);
@@ -226,9 +226,11 @@ namespace Caculator
             }
         }
         // Bốn toán tử + - * /{
+        bool isFirstOperator = true;
         private void bt_divis_Click(object sender, EventArgs e)
         {
             mOperator = _DIVISION;
+            isOperator = true;
             if (isEqualClicked && !isOperator)
                 b = a;
             AppendOperator(isOperator, _DIVISION);
@@ -238,6 +240,7 @@ namespace Caculator
         private void bt_multi_Click(object sender, EventArgs e)
         {
             mOperator = _MULTIPLICATION;
+            isOperator = true;
             if (isEqualClicked && !isOperator)
                 b = a;
             AppendOperator(isOperator, _MULTIPLICATION);
@@ -247,6 +250,7 @@ namespace Caculator
         private void bt_minus_Click(object sender, EventArgs e)
         {
             mOperator = _MINUS;
+            isOperator = true;
             if (isEqualClicked && !isOperator)
                 b = a;
             AppendOperator(isOperator, _MINUS);
@@ -256,6 +260,7 @@ namespace Caculator
         private void bt_sum_Click(object sender, EventArgs e)
         {
             mOperator = _SUM;
+            isOperator = true;
             if (isEqualClicked && !isOperator)
                 b = a;
             AppendOperator(isOperator, _SUM);
@@ -343,16 +348,26 @@ namespace Caculator
 
         public void stringBuilderAppend(String number)
         {
-            if (b == 0)
+            if (isOperator)
             {
                 strBuider.Clear();
                 strBuider.Append(number);
                 updateResult();
+                isOperator = false;
             }
             else
             {
-                strBuider.Append(number);
-                updateResult();
+                if (b == 0)
+                {
+                    strBuider.Clear();
+                    strBuider.Append(number);
+                    updateResult();
+                }
+                else
+                {
+                    strBuider.Append(number);
+                    updateResult();
+                }
             }
         }
         public void updateResult()
@@ -395,15 +410,5 @@ namespace Caculator
                     return 0;
             }
         }
-
-
-
-
-
-
-
-
     }
-
-
 }
