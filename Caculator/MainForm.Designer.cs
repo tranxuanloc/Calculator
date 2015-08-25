@@ -62,12 +62,12 @@
             this.bt_random = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.lb_result = new System.Windows.Forms.Label();
+            this.lb_expresstion = new System.Windows.Forms.Label();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.app_name = new System.Windows.Forms.Label();
             this.bt_minimize = new System.Windows.Forms.Button();
             this.bt_close = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lb_expresstion = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -602,6 +602,16 @@
             this.lb_result.Text = "0";
             this.lb_result.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // lb_expresstion
+            // 
+            this.lb_expresstion.AutoSize = true;
+            this.lb_expresstion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lb_expresstion.Location = new System.Drawing.Point(3, 0);
+            this.lb_expresstion.Name = "lb_expresstion";
+            this.lb_expresstion.Size = new System.Drawing.Size(294, 55);
+            this.lb_expresstion.TabIndex = 1;
+            this.lb_expresstion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.BackColor = System.Drawing.Color.LightGray;
@@ -677,16 +687,6 @@
             this.panel1.Size = new System.Drawing.Size(300, 0);
             this.panel1.TabIndex = 5;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            // 
-            // lb_expresstion
-            // 
-            this.lb_expresstion.AutoSize = true;
-            this.lb_expresstion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lb_expresstion.Location = new System.Drawing.Point(3, 0);
-            this.lb_expresstion.Name = "lb_expresstion";
-            this.lb_expresstion.Size = new System.Drawing.Size(294, 55);
-            this.lb_expresstion.TabIndex = 1;
-            this.lb_expresstion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // MainForm
             // 

@@ -29,13 +29,17 @@ namespace Caculator
                          int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
+
         public String s_lb_result;
         public StringBuilder strBuider;
+        public StringBuilder exprestionBuilder;
+        public bool isOperator = false;
         public MainForm()
         {
             InitializeComponent();
             s_lb_result = lb_result.Text;
             strBuider = new StringBuilder();
+            exprestionBuilder = new StringBuilder();
 
 
         }
@@ -172,25 +176,58 @@ namespace Caculator
 
 
         }
+        public void AppendOperator(bool isOper, String _operator)
+        {
+            if (isOper)
+            {
+                exprestionBuilder.Remove(exprestionBuilder.Length - 1, 1);
+                Append(_operator);
+            }
+            else Append(_operator);
+        }
+        public void Append(String _operator)
+        {
+            switch (_operator)
+            {
+                case _SUM:
+                    exprestionBuilder.Append(" + ");
+                    break;
+                case _MINUS:
+                    exprestionBuilder.Append(" － ");
+                    break;
+                case _MULTIPLICATION:
+                    exprestionBuilder.Append(" ✕ ");
+                    break;
+                case _DIVISION:
+                    exprestionBuilder.Append(" ÷ ");
+                    break;
+                default:
+                    return;
+            }
+        }
         // Bốn toán tử + - * /{
         private void bt_divis_Click(object sender, EventArgs e)
         {
-
+            isOperator = true;
+            AppendOperator(isOperator, _DIVISION);
         }
 
         private void bt_multi_Click(object sender, EventArgs e)
         {
-
+            isOperator = true;
+            AppendOperator(isOperator, _MULTIPLICATION);
         }
 
         private void bt_minus_Click(object sender, EventArgs e)
         {
-
+            isOperator = true;
+            AppendOperator(isOperator, _MINUS);
         }
 
         private void bt_sum_Click(object sender, EventArgs e)
         {
-
+            isOperator = true;
+            AppendOperator(isOperator, _SUM);
         }
         // }
 
@@ -210,47 +247,35 @@ namespace Caculator
 
         }
 
-        private void bt_0_Click(object sender, EventArgs e)
-        {
-            if (strBuider.Length != 0)
-            {
-                strBuider.Append(bt_0.Text);
-                updateResult();
-            }
-        }
-
+        
         private void bt_ct_Click(object sender, EventArgs e)
         {
 
         }
-
+        // 10 number{
         private void bt_9_Click(object sender, EventArgs e)
         {
             strBuider.Append(bt_9.Text);
             updateResult();
         }
-
-        private void bt_7_Click(object sender, EventArgs e)
-        {
-            strBuider.Append(bt_7.Text);
-            updateResult();
-        }
-
-        private void bt_5_Click(object sender, EventArgs e)
-        {
-            strBuider.Append(bt_5.Text);
-            updateResult();
-        }
-
         private void bt_8_Click(object sender, EventArgs e)
         {
             strBuider.Append(bt_8.Text);
             updateResult();
         }
-
-        private void bt_2_Click(object sender, EventArgs e)
+        private void bt_7_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_2.Text);
+            strBuider.Append(bt_7.Text);
+            updateResult();
+        }
+        private void bt_6_Click(object sender, EventArgs e)
+        {
+            strBuider.Append(bt_6.Text);
+            updateResult();
+        }
+        private void bt_5_Click(object sender, EventArgs e)
+        {
+            strBuider.Append(bt_5.Text);
             updateResult();
         }
 
@@ -260,23 +285,31 @@ namespace Caculator
             updateResult();
         }
 
-        private void bt_6_Click(object sender, EventArgs e)
-        {
-            strBuider.Append(bt_6.Text);
-            updateResult();
-        }
-
-        private void bt_1_Click(object sender, EventArgs e)
-        {
-            strBuider.Append(bt_1.Text);
-            updateResult();
-        }
         private void bt_3_Click(object sender, EventArgs e)
         {
             strBuider.Append(bt_3.Text);
             updateResult();
         }
+        private void bt_2_Click(object sender, EventArgs e)
+        {
+            strBuider.Append(bt_2.Text);
+            updateResult();
+        }
+        private void bt_1_Click(object sender, EventArgs e)
+        {
+            strBuider.Append(bt_1.Text);
+            updateResult();
+        }
+        private void bt_0_Click(object sender, EventArgs e)
+        {
+            if (strBuider.Length != 0)
+            {
+                strBuider.Append(bt_0.Text);
+                updateResult();
+            }
+        }
 
+        // }
         public void updateResult()
         {
             lb_result.Text = strBuider.ToString();
