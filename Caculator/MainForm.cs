@@ -14,12 +14,9 @@ namespace Caculator
 {
     public partial class MainForm : Form
     {
-        public const String _SUM = "sum";
-        public const String _MINUS = "minus";
-        public const String _MULTIPLICATION = "multiplication";
-        public const String _DIVISION = "division";
 
 
+        //Code Layout {
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
@@ -30,17 +27,12 @@ namespace Caculator
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        public String s_lb_result;
-        public StringBuilder strBuider;
-        public StringBuilder exprestionBuilder;
-        public bool isOperator = false;
+
         public MainForm()
         {
             InitializeComponent();
-            s_lb_result = lb_result.Text;
-            strBuider = new StringBuilder();
+            strBuider = new StringBuilder("0");
             exprestionBuilder = new StringBuilder();
-
 
         }
         protected override CreateParams CreateParams
@@ -128,6 +120,20 @@ namespace Caculator
         {
             this.WindowState = FormWindowState.Minimized;
         }
+        // }
+
+
+        //Code control {
+        public const String _SUM = "sum";
+        public const String _MINUS = "minus";
+        public const String _MULTIPLICATION = "multiplication";
+        public const String _DIVISION = "division";
+
+        public StringBuilder strBuider;
+        public StringBuilder exprestionBuilder;
+        public String mOperator;
+        public bool isOperator = false;
+        double a = 0, b = 0;
 
         private void bt_clear_Click(object sender, EventArgs e)
         {
@@ -181,7 +187,7 @@ namespace Caculator
 
 
         }
-        double a = 0, b = 0;
+
         public void AppendOperator(bool isOper, String _operator)
         {
             if (isOper)
@@ -191,10 +197,10 @@ namespace Caculator
             }
             else
             {
-                exprestionBuilder.Append(a);
+                exprestionBuilder.Append(b);
                 Append(_operator);
-                clearStringBuilder();
                 updateResult();
+                clearStringBuilder();
                 isOperator = true;
             }
         }
@@ -222,36 +228,61 @@ namespace Caculator
         // Bốn toán tử + - * /{
         private void bt_divis_Click(object sender, EventArgs e)
         {
-            if(isOperator){
-                ExcuteCalculate(,);
-                AppendOperator(isOperator, _DIVISION);
-                updateExpression();
-            }
-            
+            mOperator = _DIVISION;
+            if (isEqualClicked && !isOperator)
+                b = a;
+            AppendOperator(isOperator, _DIVISION);
+            updateExpression();
         }
 
         private void bt_multi_Click(object sender, EventArgs e)
         {
+            mOperator = _MULTIPLICATION;
+            if (isEqualClicked && !isOperator)
+                b = a;
             AppendOperator(isOperator, _MULTIPLICATION);
             updateExpression();
         }
 
         private void bt_minus_Click(object sender, EventArgs e)
         {
+            mOperator = _MINUS;
+            if (isEqualClicked && !isOperator)
+                b = a;
             AppendOperator(isOperator, _MINUS);
             updateExpression();
         }
 
         private void bt_sum_Click(object sender, EventArgs e)
         {
+            mOperator = _SUM;
+            if (isEqualClicked && !isOperator)
+                b = a;
             AppendOperator(isOperator, _SUM);
             updateExpression();
         }
         // }
-
+        bool isFirst = true;
+        bool isEqualClicked = false;
         private void bt_equal_Click(object sender, EventArgs e)
         {
-            clearStringBuilder();
+            isEqualClicked = true;
+            resetExpression();
+            updateExpression();
+            if (!String.IsNullOrEmpty(mOperator))
+            {
+                if (isFirst)
+                {
+                    a = b;
+                    a = ExcuteCalculate(a, b, mOperator);
+                    lb_result.Text = a.ToString();
+                }
+                else
+                {
+                    a = ExcuteCalculate(a, b, mOperator);
+                    lb_result.Text = a.ToString();
+                }
+            }
         }
         private void bt_random_Click(object sender, EventArgs e)
         {
@@ -259,13 +290,10 @@ namespace Caculator
             clearStringBuilder();
 
         }
-
         private void bt_dot_Click(object sender, EventArgs e)
         {
 
         }
-
-
         private void bt_ct_Click(object sender, EventArgs e)
         {
 
@@ -273,68 +301,64 @@ namespace Caculator
         // 10 number{
         private void bt_9_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_9.Text);
-            updateResult();
+            stringBuilderAppend(bt_9.Text);
         }
         private void bt_8_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_8.Text);
-            updateResult();
+            stringBuilderAppend(bt_8.Text);
         }
         private void bt_7_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_7.Text);
-            updateResult();
+            stringBuilderAppend(bt_7.Text);
         }
         private void bt_6_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_6.Text);
-            updateResult();
+            stringBuilderAppend(bt_6.Text);
         }
         private void bt_5_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_5.Text);
-            updateResult();
+            stringBuilderAppend(bt_5.Text);
         }
-
         private void bt_4_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_4.Text);
-            updateResult();
+            stringBuilderAppend(bt_4.Text);
         }
-
         private void bt_3_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_3.Text);
-            updateResult();
+            stringBuilderAppend(bt_3.Text);
         }
         private void bt_2_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_2.Text);
-            updateResult();
+            stringBuilderAppend(bt_2.Text);
         }
         private void bt_1_Click(object sender, EventArgs e)
         {
-            strBuider.Append(bt_1.Text);
-            updateResult();
+            stringBuilderAppend(bt_1.Text);
         }
         private void bt_0_Click(object sender, EventArgs e)
         {
+            stringBuilderAppend(bt_0.Text);
+        }
+        // }
 
-            if (a != 0)
+        public void stringBuilderAppend(String number)
+        {
+            if (b == 0)
             {
-                strBuider.Append(bt_0.Text);
+                strBuider.Clear();
+                strBuider.Append(number);
+                updateResult();
+            }
+            else
+            {
+                strBuider.Append(number);
                 updateResult();
             }
         }
-
-        // }
-
-
         public void updateResult()
         {
             lb_result.Text = strBuider.ToString();
-            a = Convert.ToDouble(strBuider.ToString());
+            b = Double.Parse(strBuider.ToString());
         }
         public void updateExpression()
         {
@@ -346,11 +370,30 @@ namespace Caculator
         }
         public void clearStringBuilder()
         {
-            strBuider.Clear();
+            strBuider = new StringBuilder("0");
         }
-        public void ExcuteCalculate(int a, int b, String expression)
+        public void resetExpression()
         {
+            exprestionBuilder.Clear();
+            isOperator = false;
+        }
 
+        public double ExcuteCalculate(double a, double b, String expression)
+        {
+            isFirst = false;
+            switch (expression)
+            {
+                case _SUM:
+                    return a + b;
+                case _MINUS:
+                    return a - b;
+                case _MULTIPLICATION:
+                    return a * b;
+                case _DIVISION:
+                    return a / b;
+                default:
+                    return 0;
+            }
         }
 
 
