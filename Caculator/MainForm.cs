@@ -131,6 +131,11 @@ namespace Caculator
 
         private void bt_clear_Click(object sender, EventArgs e)
         {
+            a = 0;
+            b = 0;
+            isOperator = false;
+            exprestionBuilder.Clear();
+            updateExpression();
             setResultZero();
             clearStringBuilder();
         }
@@ -176,17 +181,26 @@ namespace Caculator
 
 
         }
+        double a = 0, b = 0;
         public void AppendOperator(bool isOper, String _operator)
         {
             if (isOper)
             {
-                exprestionBuilder.Remove(exprestionBuilder.Length - 1, 1);
+                exprestionBuilder.Remove(exprestionBuilder.Length - 3, 3);
                 Append(_operator);
             }
-            else Append(_operator);
+            else
+            {
+                exprestionBuilder.Append(a);
+                Append(_operator);
+                clearStringBuilder();
+                updateResult();
+                isOperator = true;
+            }
         }
         public void Append(String _operator)
         {
+
             switch (_operator)
             {
                 case _SUM:
@@ -208,26 +222,30 @@ namespace Caculator
         // Bốn toán tử + - * /{
         private void bt_divis_Click(object sender, EventArgs e)
         {
-            isOperator = true;
-            AppendOperator(isOperator, _DIVISION);
+            if(isOperator){
+                ExcuteCalculate(,);
+                AppendOperator(isOperator, _DIVISION);
+                updateExpression();
+            }
+            
         }
 
         private void bt_multi_Click(object sender, EventArgs e)
         {
-            isOperator = true;
             AppendOperator(isOperator, _MULTIPLICATION);
+            updateExpression();
         }
 
         private void bt_minus_Click(object sender, EventArgs e)
         {
-            isOperator = true;
             AppendOperator(isOperator, _MINUS);
+            updateExpression();
         }
 
         private void bt_sum_Click(object sender, EventArgs e)
         {
-            isOperator = true;
             AppendOperator(isOperator, _SUM);
+            updateExpression();
         }
         // }
 
@@ -247,7 +265,7 @@ namespace Caculator
 
         }
 
-        
+
         private void bt_ct_Click(object sender, EventArgs e)
         {
 
@@ -302,7 +320,8 @@ namespace Caculator
         }
         private void bt_0_Click(object sender, EventArgs e)
         {
-            if (strBuider.Length != 0)
+
+            if (a != 0)
             {
                 strBuider.Append(bt_0.Text);
                 updateResult();
@@ -310,9 +329,16 @@ namespace Caculator
         }
 
         // }
+
+
         public void updateResult()
         {
             lb_result.Text = strBuider.ToString();
+            a = Convert.ToDouble(strBuider.ToString());
+        }
+        public void updateExpression()
+        {
+            lb_expresstion.Text = exprestionBuilder.ToString();
         }
         public void setResultZero()
         {
