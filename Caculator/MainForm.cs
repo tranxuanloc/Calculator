@@ -133,17 +133,22 @@ namespace Caculator
         public StringBuilder exprestionBuilder;
         public String mOperator;
         public bool isOperator = false;
-        double a = 0, b = 0;
+        double a = 0, b = 0, c = 0;
 
         private void bt_clear_Click(object sender, EventArgs e)
         {
             a = 0;
             b = 0;
+            j = i = 0;
+            clickEqual = 0;
+            isFirstOperator = true;
             isOperator = false;
+            existOperator = false;
+            tempOperator = null;
             exprestionBuilder.Clear();
             updateExpression();
-            setResultZero();
             clearStringBuilder();
+            updateResult();
         }
 
         private void bt_sqrt_Click(object sender, EventArgs e)
@@ -168,42 +173,29 @@ namespace Caculator
 
         private void bt_clear_entry_Click(object sender, EventArgs e)
         {
-            setResultZero();
             clearStringBuilder();
+            updateResult();
+            a = 0;
         }
 
         private void bt_bspc_Click(object sender, EventArgs e)
         {
-            if (strBuider.Length > 0)
+            if (strBuider.Length > 0 && clickEqual != 1)
             {
                 strBuider.Remove(strBuider.Length - 1, 1);
-                updateResult();
                 if (strBuider.Length == 0)
                 {
                     clearStringBuilder();
-                    setResultZero();
+                    updateResult();
                 }
+                else
+                    updateResult();
             }
 
 
         }
 
-        public void AppendOperator(bool isOper, String _operator)
-        {
-            if (isOper && !isFirstOperator)
-            {
-                exprestionBuilder.Remove(exprestionBuilder.Length - 3, 3);
-                Append(_operator);
-            }
-            else
-            {
-                exprestionBuilder.Append(b);
-                Append(_operator);
-                updateResult();
-                clearStringBuilder();
-                isOperator = true;
-            }
-        }
+
         public void Append(String _operator)
         {
 
@@ -229,65 +221,95 @@ namespace Caculator
         bool isFirstOperator = true;
         private void bt_divis_Click(object sender, EventArgs e)
         {
-            mOperator = _DIVISION;
-            isOperator = true;
-            if (isEqualClicked && !isOperator)
-                b = a;
-            AppendOperator(isOperator, _DIVISION);
-            updateExpression();
+            operatorClick(_DIVISION);
         }
 
         private void bt_multi_Click(object sender, EventArgs e)
         {
-            mOperator = _MULTIPLICATION;
-            isOperator = true;
-            if (isEqualClicked && !isOperator)
-                b = a;
-            AppendOperator(isOperator, _MULTIPLICATION);
-            updateExpression();
+            operatorClick(_MULTIPLICATION);
         }
 
         private void bt_minus_Click(object sender, EventArgs e)
         {
-            mOperator = _MINUS;
-            isOperator = true;
-            if (isEqualClicked && !isOperator)
-                b = a;
-            AppendOperator(isOperator, _MINUS);
-            updateExpression();
+            operatorClick(_MINUS);
         }
 
         private void bt_sum_Click(object sender, EventArgs e)
         {
-            mOperator = _SUM;
-            isOperator = true;
-            if (isEqualClicked && !isOperator)
-                b = a;
-            AppendOperator(isOperator, _SUM);
-            updateExpression();
+            operatorClick(_SUM);
         }
-        // }
-        bool isFirst = true;
-        bool isEqualClicked = false;
-        private void bt_equal_Click(object sender, EventArgs e)
+
+        bool existOperator = false;
+        public void AppendOperator(bool isOper, String _operator)
         {
-            isEqualClicked = true;
-            resetExpression();
-            updateExpression();
-            if (!String.IsNullOrEmpty(mOperator))
+            if (isOper)
             {
-                if (isFirst)
+                exprestionBuilder.Remove(exprestionBuilder.Length - 3, 3);
+                Append(_operator);
+                updateExpression();
+                existOperator = true;
+            }
+            else
+            {
+                exprestionBuilder.Append(b);
+                Append(_operator);
+                updateExpression();
+                isOperator = true;
+            }
+        }
+        String tempOperator;
+        public void operatorClick(String mOpera)
+        {
+            j = i = 0;
+            mOperator = mOpera;
+            AppendOperator(isOperator, mOpera);
+
+            if (isOperator)
+            {
+                if (isFirstOperator)
                 {
                     a = b;
-                    a = ExcuteCalculate(a, b, mOperator);
-                    lb_result.Text = a.ToString();
+                    isFirstOperator = false;
+                    tempOperator = mOpera;
+                    return;
                 }
-                else
+                if (existOperator)
                 {
-                    a = ExcuteCalculate(a, b, mOperator);
+                    tempOperator = mOpera;
+                    return;
+                }
+                if (!String.IsNullOrEmpty(tempOperator))
+                {
+                    a = ExcuteCalculate(a, b, tempOperator);
                     lb_result.Text = a.ToString();
+                    tempOperator = mOpera;
                 }
             }
+            label1.Text = a.ToString();
+            label2.Text = b.ToString();
+            label3.Text = c.ToString();
+            label4.Text = isOperator.ToString();
+        }
+        // }
+        int i = 0, j = 0;
+        int clickEqual = 0;
+        private void bt_equal_Click(object sender, EventArgs e)
+        {
+            clickEqual = 1;
+            if (i <= 0)
+            {
+                c = b;
+            }
+            isFirstOperator = true;
+            b = a = ExcuteCalculate(a, c, mOperator);
+            lb_result.Text = a.ToString();
+            resetExpression();
+            updateExpression();
+            i++;
+            label1.Text = a.ToString();
+            label2.Text = b.ToString();
+            label3.Text = c.ToString();
+            label4.Text = isOperator.ToString();
         }
         private void bt_random_Click(object sender, EventArgs e)
         {
@@ -301,7 +323,9 @@ namespace Caculator
         }
         private void bt_ct_Click(object sender, EventArgs e)
         {
-
+            b *= -1;
+            strBuider = new StringBuilder(b.ToString());
+            updateResult();
         }
         // 10 number{
         private void bt_9_Click(object sender, EventArgs e)
@@ -348,26 +372,19 @@ namespace Caculator
 
         public void stringBuilderAppend(String number)
         {
-            if (isOperator)
+            isOperator = false;
+            existOperator = false;
+            if (b == 0 || j == 0)
             {
+                j = 1;
                 strBuider.Clear();
                 strBuider.Append(number);
                 updateResult();
-                isOperator = false;
             }
             else
             {
-                if (b == 0)
-                {
-                    strBuider.Clear();
-                    strBuider.Append(number);
-                    updateResult();
-                }
-                else
-                {
-                    strBuider.Append(number);
-                    updateResult();
-                }
+                strBuider.Append(number);
+                updateResult();
             }
         }
         public void updateResult()
@@ -379,13 +396,10 @@ namespace Caculator
         {
             lb_expresstion.Text = exprestionBuilder.ToString();
         }
-        public void setResultZero()
-        {
-            lb_result.Text = "0";
-        }
         public void clearStringBuilder()
         {
             strBuider = new StringBuilder("0");
+            b = Double.Parse(strBuider.ToString());
         }
         public void resetExpression()
         {
@@ -395,7 +409,6 @@ namespace Caculator
 
         public double ExcuteCalculate(double a, double b, String expression)
         {
-            isFirst = false;
             switch (expression)
             {
                 case _SUM:
